@@ -6,12 +6,12 @@ import sys
 
 
 class Card:
-    suits = ['\u2666', '\u2665', '\u2663', '\u2660']
+    suits = ["\u2663", "\u2665", "\u2666", "\u2660"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
     def __init__(self, suit=0, rank=0):
         """Default constructor """
-        suit_name = ["H","D","C","S"]
+        suit_name = ["C","H","D","S"]
         ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
         self.suit = suit
         self.rank = rank
@@ -74,16 +74,21 @@ class Hand:
 
     def __init__(self):
         self.cards = []
+        self.names = []
 
     
     def draw(self,Deck):
-        self.cards.append(Deck.pop_card())
+        added_card = Deck.pop_card()
+        self.cards.append(added_card)
+        self.names.append(added_card.name)
 
     def remove_card(self):
-        single_card = input("Choose a card to remove")
-        if single_card in self.cards:
-            self.cards.remove(single_card)
-            return single_card
+        single_card = str(input("Choose a card to remove"))
+        if single_card in self.names:
+            index = self.names.index(single_card)
+            self.names.pop(index)
+            self.cards.pop(index)
+            print(f"Removed card {single_card}")
         else:
             print("You dont have that card")
 
@@ -199,12 +204,12 @@ class Game: #This game always has 3 players
 
         while True:
             if len(winner.hand.cards) > 10:
-
                 winner.hand.remove_card()
-        
-        while True:
-            if len(self.players[0].hand.cards) > 0:
-                self.play_round(winner_n)
+            
+            else: 
+                while True:
+                    if len(self.players[0].hand.cards) > 0:
+                        self.play_round(winner_n)
 
 
 
