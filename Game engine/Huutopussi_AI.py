@@ -1,7 +1,9 @@
 #Huutopussi AI
 #Ideana tehda koneoppimalli joka pelaa korttipelia huutopussi. 
+# %%
 
 import random
+import pandas as pd 
 import sys
 
 
@@ -87,8 +89,9 @@ class Hand:
         if single_card in self.names:
             index = self.names.index(single_card)
             self.names.pop(index)
-            self.cards.pop(index)
+
             print(f"Removed card {single_card}")
+            return self.cards.pop(index)
         else:
             print("You dont have that card")
 
@@ -148,8 +151,9 @@ class Game: #This game always has 3 players
     def play_round(self,winner_n): #single tick to play. 
         played_cards= []
         for i in range(3):
-            played_cards.append(self.players[winner_n+i].hand.remove())
-        highest_card =played_cards.index[max(played_cards[0].rank,played_cards[1].rank,played_cards[2].rank)]
+            played_cards.append(self.players[(winner_n+i)%3].hand.remove_card())
+            print(f"played {played_cards}")
+        highest_card =pd.Series([played_cards[0].rank,played_cards[1].rank,played_cards[2].rank]).idxmax()
         print(f"highest card was {played_cards[highest_card]}. Winner is {self.players[highest_card]}")
         winner_n = (winner_n +highest_card)%3
         self.players[winner_n].roundwinner(1)
