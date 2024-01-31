@@ -152,7 +152,7 @@ class Game:
     def play_tick(self, winner_n):  # Single tick to play
         played_cards = []
         for i in range(3):
-            played_cards.append(self.players[(winner_n + i) % 3].hand.remove_card()) # make a list of played cards
+            played_cards.extend(self.players[(winner_n + i) % 3].hand.remove_card()) # make a list of played cards
             print(f"played {played_cards}") # print played cards
         highest_card_index = max(range(3), key=lambda i: played_cards[i].rank) # find index of highest card
         print(f"highest card was {played_cards[highest_card_index]}. Winner is {self.players[highest_card_index]}") # print who won
