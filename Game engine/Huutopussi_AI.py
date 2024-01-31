@@ -214,6 +214,7 @@ class Game: #This game always has 3 players
                 while True:
                     if len(self.players[0].hand.cards) > 0:
                         self.play_round(winner_n)
+# moi
 
 
 
