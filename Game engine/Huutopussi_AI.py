@@ -64,9 +64,10 @@ class Hand:
         single_card = input("Choose a card to remove: ") # which card to remove
         for card in self.cards:
             if card.name == single_card: # if card is in hand
+                del_card = card
                 self.cards.remove(card) # remove card
                 print(f"Removed card {single_card}")
-                return card
+                return del_card
         print("You don't have that card") # card not in hand
         return None  # return None if the card is not found
 
