@@ -5,6 +5,7 @@
 import random
 import pandas as pd 
 import sys
+import unittest
 
 
 class Card:
@@ -61,15 +62,28 @@ class Hand:
         self.cards.extend(added_card) # draw a card from a specific deck
     
     def remove_card(self):
-        single_card = input("Choose a card to remove: ") # which card to remove
-        for card in self.cards:
-            if card.name == single_card: # if card is in hand
-                del_card = card
-                self.cards.remove(card) # remove card
+        index_or_name = input("Choose to pick a card by index or by name: ") # Choose to delete either by index or by name
+        if index_or_name == "name":
+            single_card = input("Choose a card to remove: (name) ") # which card to remove
+            for card in self.cards:
+                if card.name == single_card: # if card is in hand
+                    del_card = card
+                    self.cards.remove(card) # remove card
+                    print(f"Removed card {single_card}")
+                    return del_card
+            print("You don't have that card") # card not in hand
+            return None  # return None if the card is not found
+        elif index_or_name == "index":
+            single_card = int(input("Choose a card to remove: (index) ")) # which card to remove by index
+            if single_card < len(self.cards):
+                del_card = self.cards[single_card]
+                self.cards.remove(self.cards[single_card]) # remove card
                 print(f"Removed card {single_card}")
                 return del_card
-        print("You don't have that card") # card not in hand
-        return None  # return None if the card is not found
+            print("You don't have that card") # card not in hand
+            return None
+        else:
+            print("Wrong input")
 
         
 
@@ -95,7 +109,7 @@ class Player:
         return f"Player's current hand: {self.hand}" # print hand
     
     def print_won_cards(self):
-        return f"Player's current hand: {self.hand}" # print won cards
+        return f"won cards {self.won_cards}" # print won cards
 
     def __str__(self):
         return f"{self.name} has {self.points} points and their current hand is {self.hand}"
@@ -153,13 +167,19 @@ class Game:
     def play_tick(self, winner_n):  # Single tick to play
         played_cards = []
         for i in range(3):
-            played_cards.append(self.players[(winner_n + i) % 3].hand.remove_card()) # make a list of played cards
-            print(f"played {played_cards}") # print played cards
+            removed_card=self.players[(winner_n + i) % 3].hand.remove_card()
+            while True:
+                if removed_card is not None:
+                    played_cards.append(removed_card) 
+                    break
+                else:
+                    removed_card=self.players[(winner_n + i) % 3].hand.remove_card()
+                print(f"played {played_cards}")  # print played cards 
         highest_card_index = max(range(3), key=lambda i: played_cards[i].rank) # find index of highest card
         print(f"highest card was {played_cards[highest_card_index]}. Winner is {self.players[highest_card_index]}") # print who won
         winner_n = (winner_n + highest_card_index) % 3 # get the index of winner
-        self.players[winner_n].won_cards.add_card(played_cards,3)
-        self.players[winner_n].round_winner(1)
+        for card in played_cards:
+            self.players[winner_n].won_cards.draw(card,1) # add cards to winner's hand
     
     def count_points(self):
             for player in self.players:
@@ -192,3 +212,36 @@ class Game:
             self.play_tick(winner_n) # play rounds until no cards left
         self.count_points()
         print(self.players[0].points,self.players[1].points,self.players[2].points)
+
+
+
+
+import unittest
+
+class TestBiddingSystem(unittest.TestCase):
+    def setUp(self):
+        # Initialize any necessary components or objects for testing
+        pass
+
+    def test_valid_bid(self):
+        # Test placing a valid bid
+        bidding_system = BiddingSystem(players)
+        result = bidding_system.place_bid(50)
+        self.assertTrue(result, "Valid bid should be accepted")
+
+    def test_invalid_bid(self):
+        # Test placing an invalid bid
+        bidding_system = BiddingSystem(players)
+        result = bidding_system.place_bid(47)
+        self.assertFalse(result, "Invalid bid should be rejected")
+
+class TestCardPlayingLogic(unittest.TestCase):
+    def setUp(self):
+        # Initialize any necessary components or objects for testing
+        pass
+
+    def test_play_tick(self):
+        # Test the play_tick method
+        # Set up the necessary game state and players
+        # Call the play_tick method and assert the expected outcome
+        pass
